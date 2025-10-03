@@ -36,64 +36,74 @@ def main(argv):
     do_build = "--build" in argv
     out_3mf = os.path.splitext(scad_file)[0] + ".3mf"
 
-    # Launch the OpenSCAD GUI for interactive editing/preview. Using
-    # Popen allows the script to continue running without waiting for the
-    # GUI process to exit.
-    try:
-        subprocess.Popen(["openscad", scad_file])
-    except FileNotFoundError:
-        print("Error: 'openscad' not found in PATH. Please install OpenSCAD.")
-        return 3
-
-    # Give the GUI a moment to create its window before attempting automation.
-    time.sleep(1)
-
-    # On macOS, use AppleScript to send F6 keystroke to render.
-    # NOTE: Requires Accessibility permissions for Terminal or VS Code.
-    # Go to: System Settings > Privacy & Security > Accessibility
-    # and add Terminal.app (or Visual Studio Code.app)
-    if platform.system() == "Darwin":
-        try:
-            # AppleScript to activate OpenSCAD and send F6 (key code 97)
-            applescript = '''
-                tell application "OpenSCAD" to activate
-                delay 0.5
-                tell application "System Events"
-                    key code 97
-                end tell
-            '''
-            result = subprocess.run(["osascript", "-e", applescript], 
-                                   capture_output=True, text=True, check=False)
-            if result.returncode == 0:
-                print("✓ Sent F6 to OpenSCAD (auto-render)")
-            elif "1002" in result.stderr:
-                print("\n⚠️  Auto-render failed: Accessibility permission needed")
-                print("To enable auto-render on macOS:")
-                print("1. Open System Settings > Privacy & Security > Accessibility")
-                print("2. Add Terminal.app (if running from terminal) or")
-                print("   Visual Studio Code.app (if running from VS Code)")
-                print("3. Restart VS Code or Terminal")
-                print("\nAlternatively, press F6 manually in OpenSCAD.\n")
-            else:
-                print(f"Note: Could not auto-press F6: {result.stderr}")
-        except Exception as e:
-            print(f"Note: Could not auto-press F6: {e}")
-
     # If the user requested a headless build, run OpenSCAD's command line
     # exporter to create a .3mf and then attempt to open it in OrcaSlicer.
     if do_build:
-        subprocess.run(["openscad", "-o", out_3mf, scad_file])
-
-        system = platform.system()
-        if system == "Darwin":
-            # macOS: use the `open` utility to launch the application with the file
-            subprocess.run(["open", "-a", "OrcaSlicer", out_3mf])
-        elif system == "Windows":
-            # Windows: `start` is a shell built-in, so run via shell=True
-            subprocess.run(["start", "", "OrcaSlicer.exe", out_3mf], shell=True)
+        print(f"Building 3MF: {out_3mf}")
+        result = subprocess.run(["openscad", "-o", out_3mf, scad_file],
+                               capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"✓ Successfully created: {out_3mf}")
+            
+            # Open the 3MF in OrcaSlicer if available
+            system = platform.system()
+            if system == "Darwin":
+                # macOS: use the `open` utility to launch the application with the file
+                subprocess.run(["open", "-a", "OrcaSlicer", out_3mf], 
+                             capture_output=True, check=False)
+                print("✓ Opened in OrcaSlicer")
+            elif system == "Windows":
+                # Windows: `start` is a shell built-in, so run via shell=True
+                subprocess.run(["start", "", "OrcaSlicer.exe", out_3mf], shell=True)
+            else:
+                # Linux/other: assume orca-slicer is on PATH
+                subprocess.run(["orca-slicer", out_3mf])
         else:
-            # Linux/other: assume orca-slicer is on PATH
-            subprocess.run(["orca-slicer", out_3mf])
+            print(f"Error creating 3MF: {result.stderr}")
+            return 4
+    else:
+        # Run mode: Launch the OpenSCAD GUI for interactive editing/preview.
+        # Using Popen allows the script to continue running without waiting for the
+        # GUI process to exit.
+        try:
+            subprocess.Popen(["openscad", scad_file])
+        except FileNotFoundError:
+            print("Error: 'openscad' not found in PATH. Please install OpenSCAD.")
+            return 3
+
+        # Give the GUI a moment to create its window before attempting automation.
+        time.sleep(1)
+
+        # On macOS, use AppleScript to send F6 keystroke to render.
+        # NOTE: Requires Accessibility permissions for Terminal or VS Code.
+        # Go to: System Settings > Privacy & Security > Accessibility
+        # and add Terminal.app (or Visual Studio Code.app)
+        if platform.system() == "Darwin":
+            try:
+                # AppleScript to activate OpenSCAD and send F6 (key code 97)
+                applescript = '''
+                    tell application "OpenSCAD" to activate
+                    delay 0.5
+                    tell application "System Events"
+                        key code 97
+                    end tell
+                '''
+                result = subprocess.run(["osascript", "-e", applescript], 
+                                       capture_output=True, text=True, check=False)
+                if result.returncode == 0:
+                    print("✓ Sent F6 to OpenSCAD (auto-render)")
+                elif "1002" in result.stderr:
+                    print("\n⚠️  Auto-render failed: Accessibility permission needed")
+                    print("To enable auto-render on macOS:")
+                    print("1. Open System Settings > Privacy & Security > Accessibility")
+                    print("2. Add Terminal.app (if running from terminal) or")
+                    print("   Visual Studio Code.app (if running from VS Code)")
+                    print("3. Restart VS Code or Terminal")
+                    print("\nAlternatively, press F6 manually in OpenSCAD.\n")
+                else:
+                    print(f"Note: Could not auto-press F6: {result.stderr}")
+            except Exception as e:
+                print(f"Note: Could not auto-press F6: {e}")
 
     return 0
 

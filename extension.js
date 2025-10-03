@@ -74,17 +74,29 @@ function activate(context) {
         const file = editor.document.fileName;
 
         // Run the helper script in build mode.
+        const fileName = path.basename(file, '.scad');
+        const fileDir = path.dirname(file);
+        const output3mf = path.join(fileDir, `${fileName}.3mf`);
+        
         execFile("python3", [scriptPath, file, "--build"], (error, stdout, stderr) => {
             if (error) {
                 console.error(`[OpenSCAD Helper] Error: ${error.message}`);
                 vscode.window.showErrorMessage(`OpenSCAD Build Error: ${error.message}`);
                 return;
             }
-            if (stdout) console.log(`[OpenSCAD Helper] ${stdout}`);
+            if (stdout) {
+                console.log(`[OpenSCAD Helper] ${stdout}`);
+                if (stdout.includes("Successfully created")) {
+                    vscode.window.showInformationMessage(
+                        `✓ Created ${fileName}.3mf in same directory`
+                    );
+                }
+            }
             if (stderr) console.error(`[OpenSCAD Helper] ${stderr}`);
         });
+        
         vscode.window.showInformationMessage(
-            "Build started: 3MF export + OrcaSlicer."
+            `Building ${fileName}.3mf...`
         );
     });
 
