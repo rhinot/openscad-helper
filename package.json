@@ -26,6 +26,7 @@
     "url": "https://github.com/rhinot/openscad-helper/issues"
   },
   "homepage": "https://github.com/rhinot/openscad-helper#readme",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "./extension.js",
   "contributes": {
     "commands": [
