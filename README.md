@@ -1,19 +1,20 @@
-# OpenSCAD Helper
+# OpenSCAD Render & Export
 
-Cross-platform VS Code extension to **Run** and **Build** OpenSCAD files with optional macOS auto-render and OrcaSlicer integration.
+Cross-platform VS Code extension to **render** OpenSCAD files in the GUI and **export** to 3MF for 3D printing with OrcaSlicer integration.
 
 ## Features
 
-- **Run (GUI)**: Opens the current `.scad` file in OpenSCAD GUI. On macOS, the helper can automatically trigger F6 to render if the `pyautogui` package is installed and macOS Accessibility permissions are granted for your Python interpreter.
-- **Build (3MF + OrcaSlicer)**: Headless export of the current `.scad` file to `.3mf` and opens OrcaSlicer ready for printing.
-- Cross-platform: Works on **macOS, Windows, Linux**.
-- Keyboard shortcuts: **F5** to Run, **Shift+Cmd+B** to Build (on macOS)
+- **Render in OpenSCAD**: Opens your `.scad` file in OpenSCAD GUI with automatic F6 rendering on all platforms (macOS, Windows, Linux)
+- **Export to 3MF**: Headless export of your `.scad` file to `.3mf` and automatically opens OrcaSlicer for slicing
+- **Cross-platform**: Works on **macOS, Windows, Linux** with platform-specific auto-render support
+- **Keyboard shortcuts**: **F5** to Render, **Shift+Cmd+B** to Export (on macOS)
+- **One-click workflow**: From code to rendered preview or 3D print-ready file in seconds
 
 ## Requirements
 
-- **Python 3** installed and available in PATH.
-- **OpenSCAD** installed and available in PATH (command line tool).
-- **OrcaSlicer** installed (optional, for Build command).
+- **Python 3** installed and available in PATH
+- **OpenSCAD** installed and available in PATH (command line tool)
+- **OrcaSlicer** installed (optional, for Export command)
 
 ### Auto-Render (Optional)
 
@@ -68,25 +69,28 @@ The extension can automatically press F6 to render your design:
 
 ## Usage
 
-### Running OpenSCAD (Preview Mode)
+### Render in OpenSCAD
 
 1. Open a `.scad` file in VS Code
-2. Press **F5** or run the command **"OpenSCAD: Run (GUI)"** from the Command Palette
-3. OpenSCAD will open with your file loaded
-4. On macOS (with pyautogui installed), the extension will automatically press F6 to render the preview
+2. Press **F5** or click the ▶ **Render in OpenSCAD** button (top-right)
+3. OpenSCAD opens with your file and automatically renders (F6) after 0.5 seconds
+4. Works on all platforms:
+   - **macOS**: Uses AppleScript (requires VS Code Accessibility permission)
+   - **Windows**: Uses pyautogui (install with `pip install pyautogui`)
+   - **Linux**: Uses xdotool or pyautogui (install xdotool recommended)
 
-### Building for 3D Printing
+### Export to 3MF for 3D Printing
 
 1. Open a `.scad` file in VS Code
-2. Press **Shift+Cmd+B** (macOS) or run the command **"OpenSCAD: Build (3MF + OrcaSlicer)"** from the Command Palette
+2. Press **Shift+Cmd+B** (macOS) or click the 📦 **Export 3MF to OrcaSlicer** button
 3. The extension will:
    - Export your design to a `.3mf` file (saved in the same directory as your `.scad` file)
-   - Open OrcaSlicer with the exported file ready for slicing
+   - Automatically open OrcaSlicer with the file ready for slicing
 
 ### Keyboard Shortcuts
 
-- **F5**: Run (open in OpenSCAD GUI)
-- **Shift+Cmd+B** (macOS) / **Shift+Ctrl+B** (Windows/Linux): Build to 3MF and open in OrcaSlicer
+- **F5**: Render in OpenSCAD (with auto-render)
+- **Shift+Cmd+B** (macOS) / **Shift+Ctrl+B** (Windows/Linux): Export to 3MF and open in OrcaSlicer
 
 ## Setup Notes
 
