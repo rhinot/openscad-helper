@@ -26,13 +26,27 @@ function activate(context) {
 
         // Spawn the helper script with python3 and the current file path.
         // execFile is used to avoid spawning a shell.
-        execFile("python3", [scriptPath, file]);
+        execFile("python3", [scriptPath, file], (error, stdout, stderr) => {
+            if (error) {
+                console.error(`[OpenSCAD Helper] Error: ${error.message}`);
+                vscode.window.showErrorMessage(`OpenSCAD Error: ${error.message}`);
+                return;
+            }
+            if (stdout) console.log(`[OpenSCAD Helper] ${stdout}`);
+            if (stderr) console.error(`[OpenSCAD Helper] ${stderr}`);
+        });
 
-        // Notify the user that the GUI was launched (and macOS automation will run
-        // if pyautogui is available on the user's Python environment).
-        vscode.window.showInformationMessage(
-            "OpenSCAD GUI launched. macOS auto-render if pyautogui is installed."
-        );
+        // Notify the user that the GUI was launched (and macOS automation will run)
+        const platform = process.platform;
+        if (platform === 'darwin') {
+            vscode.window.showInformationMessage(
+                "OpenSCAD launched with auto-render (F6)."
+            );
+        } else {
+            vscode.window.showInformationMessage(
+                "OpenSCAD launched."
+            );
+        }
     });
 
     // Register the "Build" command which runs the helper script with --build.
@@ -47,7 +61,15 @@ function activate(context) {
         const file = editor.document.fileName;
 
         // Run the helper script in build mode.
-        execFile("python3", [scriptPath, file, "--build"]);
+        execFile("python3", [scriptPath, file, "--build"], (error, stdout, stderr) => {
+            if (error) {
+                console.error(`[OpenSCAD Helper] Error: ${error.message}`);
+                vscode.window.showErrorMessage(`OpenSCAD Build Error: ${error.message}`);
+                return;
+            }
+            if (stdout) console.log(`[OpenSCAD Helper] ${stdout}`);
+            if (stderr) console.error(`[OpenSCAD Helper] ${stderr}`);
+        });
         vscode.window.showInformationMessage(
             "Build started: 3MF export + OrcaSlicer."
         );
