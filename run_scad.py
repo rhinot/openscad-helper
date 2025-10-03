@@ -13,8 +13,10 @@ Behavior:
    open the result in OrcaSlicer.
 
 Notes:
- - On macOS the script will automatically press F6 (render) using AppleScript
-   after opening the GUI. No additional dependencies required.
+ - Auto-render (F6) support:
+   * macOS: Uses AppleScript (requires Accessibility permissions)
+   * Windows: Uses pyautogui or pywinauto (install with: pip install pyautogui)
+   * Linux: Uses xdotool or pyautogui (install xdotool recommended)
  - This script keeps error handling minimal because it is intended as a
    development helper. Expand error handling if you rely on it in CI.
 """
@@ -74,13 +76,13 @@ def main(argv):
         # Give the GUI a moment to create its window before attempting automation.
         time.sleep(0.5)
 
-        # On macOS, use AppleScript to send F6 keystroke to render.
-        # NOTE: Requires Accessibility permissions for Terminal or VS Code.
-        # Go to: System Settings > Privacy & Security > Accessibility
-        # and add Terminal.app (or Visual Studio Code.app)
-        if platform.system() == "Darwin":
+        # Cross-platform auto-render: Send F6 keystroke to OpenSCAD
+        system = platform.system()
+        
+        if system == "Darwin":
+            # macOS: Use AppleScript to send F6
+            # NOTE: Requires Accessibility permissions for VS Code
             try:
-                # AppleScript to activate OpenSCAD and send F6 (key code 97)
                 applescript = '''
                     tell application "OpenSCAD" to activate
                     delay 0.5
@@ -94,16 +96,54 @@ def main(argv):
                     print("✓ Sent F6 to OpenSCAD (auto-render)")
                 elif "1002" in result.stderr:
                     print("\n⚠️  Auto-render failed: Accessibility permission needed")
-                    print("To enable auto-render on macOS:")
-                    print("1. Open System Settings > Privacy & Security > Accessibility")
-                    print("2. Add Terminal.app (if running from terminal) or")
-                    print("   Visual Studio Code.app (if running from VS Code)")
-                    print("3. Restart VS Code or Terminal")
-                    print("\nAlternatively, press F6 manually in OpenSCAD.\n")
+                    print("To enable: System Settings > Privacy & Security > Accessibility")
+                    print("Add Visual Studio Code.app, then restart VS Code.\n")
                 else:
                     print(f"Note: Could not auto-press F6: {result.stderr}")
             except Exception as e:
                 print(f"Note: Could not auto-press F6: {e}")
+                
+        elif system == "Windows":
+            # Windows: Use pyautogui if available, otherwise try pywinauto
+            try:
+                import pyautogui
+                time.sleep(0.5)  # Extra wait for window focus
+                pyautogui.press('f6')
+                print("✓ Sent F6 to OpenSCAD (auto-render)")
+            except ImportError:
+                try:
+                    # Try pywinauto as fallback
+                    from pywinauto import Application
+                    time.sleep(1)
+                    app = Application(backend="uia").connect(title_re=".*OpenSCAD.*")
+                    app.top_window().set_focus()
+                    app.top_window().type_keys("{F6}")
+                    print("✓ Sent F6 to OpenSCAD (auto-render)")
+                except:
+                    print("Note: Auto-render requires 'pyautogui' or 'pywinauto'")
+                    print("Install with: pip install pyautogui")
+                    
+        elif system == "Linux":
+            # Linux: Use xdotool (most reliable) or pyautogui as fallback
+            try:
+                # Try xdotool first (most reliable on Linux)
+                result = subprocess.run(["xdotool", "search", "--name", "OpenSCAD", 
+                                       "windowactivate", "key", "F6"],
+                                      capture_output=True, text=True, check=False)
+                if result.returncode == 0:
+                    print("✓ Sent F6 to OpenSCAD (auto-render)")
+                else:
+                    raise Exception("xdotool not available")
+            except:
+                try:
+                    # Fallback to pyautogui
+                    import pyautogui
+                    time.sleep(0.5)
+                    pyautogui.press('f6')
+                    print("✓ Sent F6 to OpenSCAD (auto-render)")
+                except ImportError:
+                    print("Note: Auto-render requires 'xdotool' or 'pyautogui'")
+                    print("Install with: sudo apt install xdotool  (or)  pip install pyautogui")
 
     return 0
 

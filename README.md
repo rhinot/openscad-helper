@@ -14,11 +14,19 @@ Cross-platform VS Code extension to **Run** and **Build** OpenSCAD files with op
 - **Python 3** installed and available in PATH.
 - **OpenSCAD** installed and available in PATH (command line tool).
 - **OrcaSlicer** installed (optional, for Build command).
-- **macOS F6 auto-render** (optional): Install the `pyautogui` Python package and grant Accessibility permissions to the Python interpreter you use to run the helper.
 
-```bash
-pip3 install pyautogui
-```
+### Auto-Render (Optional)
+
+The extension can automatically press F6 to render your design:
+
+- **macOS**: Uses built-in AppleScript (requires Accessibility permission for VS Code)
+- **Windows**: Requires `pyautogui` - Install with: `pip install pyautogui`
+- **Linux**: Works with `xdotool` (recommended) or `pyautogui`
+  ```bash
+  sudo apt install xdotool  # Ubuntu/Debian
+  # OR
+  pip install pyautogui
+  ```
 
 ## Installation
 
