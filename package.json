@@ -1,9 +1,9 @@
 {
   "name": "openscad-helper",
-  "displayName": "Render & Export OpenSCAD files to OrcaSlicer",
+  "displayName": "OpenSCAD Render & Export",
   "publisher": "rhinot",
   "description": "Render & Export OpenSCAD files to OrcaSlicer with one click",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "engines": {
     "vscode": "^1.104.0"
   },
