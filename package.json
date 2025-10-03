@@ -3,7 +3,7 @@
   "displayName": "OpenSCAD Helper",
   "publisher": "rhinot",
   "description": "Run and Build OpenSCAD files cross-platform with optional macOS auto-F6",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -32,12 +32,12 @@
     "commands": [
       {
         "command": "openscad.run",
-        "title": "OpenSCAD: Run (GUI)",
+        "title": "Render in OpenSCAD",
         "icon": "$(play)"
       },
       {
         "command": "openscad.build",
-        "title": "OpenSCAD: Build (3MF + OrcaSlicer)",
+        "title": "Export 3MF to OrcaSlicer",
         "icon": "$(package)"
       }
     ],
