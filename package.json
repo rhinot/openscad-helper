@@ -3,7 +3,7 @@
   "displayName": "OpenSCAD Helper",
   "publisher": "rhinot",
   "description": "Run and Build OpenSCAD files cross-platform with optional macOS auto-F6",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -81,12 +81,12 @@
       {
         "command": "openscad.run",
         "key": "f5",
-        "when": "editorLangId == 'scad'"
+        "when": "resourceExtname == .scad"
       },
       {
         "command": "openscad.build",
         "key": "shift+cmd+b",
-        "when": "editorLangId == 'scad'"
+        "when": "resourceExtname == .scad"
       }
     ]
   },

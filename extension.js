@@ -32,7 +32,20 @@ function activate(context) {
                 vscode.window.showErrorMessage(`OpenSCAD Error: ${error.message}`);
                 return;
             }
-            if (stdout) console.log(`[OpenSCAD Helper] ${stdout}`);
+            if (stdout) {
+                console.log(`[OpenSCAD Helper] ${stdout}`);
+                // Check if accessibility permission is needed
+                if (stdout.includes("Accessibility permission needed")) {
+                    vscode.window.showWarningMessage(
+                        "OpenSCAD auto-render needs Accessibility permission. Open System Settings?",
+                        "Open Settings", "Later"
+                    ).then(selection => {
+                        if (selection === "Open Settings") {
+                            execFile("open", ["x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"]);
+                        }
+                    });
+                }
+            }
             if (stderr) console.error(`[OpenSCAD Helper] ${stderr}`);
         });
 
