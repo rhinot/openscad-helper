@@ -1,0 +1,18 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="62" fill="#FFB13B" stroke="#333" stroke-width="2"/>
+  
+  <!-- 3D Cube (representing OpenSCAD) -->
+  <g transform="translate(64, 50)">
+    <!-- Front face -->
+    <polygon points="-20,10 20,10 20,30 -20,30" fill="#FFF" stroke="#333" stroke-width="1.5"/>
+    <!-- Top face -->
+    <polygon points="-20,10 0,-10 40,-10 20,10" fill="#E8E8E8" stroke="#333" stroke-width="1.5"/>
+    <!-- Right face -->
+    <polygon points="20,10 40,-10 40,10 20,30" fill="#CCC" stroke="#333" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Play button in bottom right -->
+  <circle cx="100" cy="100" r="20" fill="#4CAF50" stroke="#333" stroke-width="2"/>
+  <polygon points="92,92 92,108 108,100" fill="#FFF"/>
+</svg>

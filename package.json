@@ -1,9 +1,9 @@
 {
   "name": "openscad-helper",
-  "displayName": "OpenSCAD Helper",
+  "displayName": "Render & Export OpenSCAD files to OrcaSlicer",
   "publisher": "rhinot",
-  "description": "Run and Build OpenSCAD files cross-platform with optional macOS auto-F6",
-  "version": "0.1.0",
+  "description": "Render & Export OpenSCAD files to OrcaSlicer with one click",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/rhinot/openscad-helper#readme",
   "license": "SEE LICENSE IN LICENSE",
+  "icon": "icon.png",
   "main": "./extension.js",
   "contributes": {
     "commands": [
