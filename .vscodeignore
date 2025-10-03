@@ -13,3 +13,5 @@ node_modules/**
 *.vsix
 FIXES_SUMMARY.md
 **/*.comments.md
+icon.svg
+icon-original.png
