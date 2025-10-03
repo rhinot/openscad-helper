@@ -1,0 +1,63 @@
+{
+  "name": "openscad-helper",
+  "displayName": "OpenSCAD Helper",
+  "publisher": "rhinot",
+  "description": "Run and Build OpenSCAD files cross-platform with optional macOS auto-F6",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "openscad",
+    "3d",
+    "cad",
+    "3d-printing",
+    "orcaslicer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rhinot/openscad-helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rhinot/openscad-helper/issues"
+  },
+  "homepage": "https://github.com/rhinot/openscad-helper#readme",
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "openscad.run",
+        "title": "OpenSCAD: Run (GUI)"
+      },
+      {
+        "command": "openscad.build",
+        "title": "OpenSCAD: Build (3MF + OrcaSlicer)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "openscad.run",
+        "key": "f5",
+        "when": "editorLangId == 'scad'"
+      },
+      {
+        "command": "openscad.build",
+        "key": "shift+cmd+b",
+        "when": "editorLangId == 'scad'"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "^2.5.1",
+    "mocha": "^10.2.0",
+    "sinon": "^21.0.0"
+  },
+  "dependencies": {}
+}
