@@ -45,23 +45,38 @@ def main(argv):
         print("Error: 'openscad' not found in PATH. Please install OpenSCAD.")
         return 3
 
-    # Give the GUI a moment to create its window before attempting any
-    # automation (macOS F6 press below).
-    time.sleep(2)
+    # Give the GUI a moment to create its window before attempting automation.
+    # Using 4 seconds for reliability on slower systems.
+    time.sleep(4)
 
-    # On macOS, use AppleScript to activate OpenSCAD and press F6 to render.
-    # This is more reliable than pyautogui and doesn't require extra dependencies.
+    # On macOS, use AppleScript to send F6 keystroke to render.
+    # NOTE: Requires Accessibility permissions for Terminal or VS Code.
+    # Go to: System Settings > Privacy & Security > Accessibility
+    # and add Terminal.app (or Visual Studio Code.app)
     if platform.system() == "Darwin":
         try:
-            # AppleScript to activate OpenSCAD and send F6 keystroke
+            # AppleScript to activate OpenSCAD and send F6 (key code 97)
             applescript = '''
                 tell application "OpenSCAD" to activate
+                delay 0.5
                 tell application "System Events"
-                    keystroke "6" using {function down}
+                    key code 97
                 end tell
             '''
-            subprocess.run(["osascript", "-e", applescript], check=False)
-            print("Sent F6 to OpenSCAD (auto-render)")
+            result = subprocess.run(["osascript", "-e", applescript], 
+                                   capture_output=True, text=True, check=False)
+            if result.returncode == 0:
+                print("✓ Sent F6 to OpenSCAD (auto-render)")
+            elif "1002" in result.stderr:
+                print("\n⚠️  Auto-render failed: Accessibility permission needed")
+                print("To enable auto-render on macOS:")
+                print("1. Open System Settings > Privacy & Security > Accessibility")
+                print("2. Add Terminal.app (if running from terminal) or")
+                print("   Visual Studio Code.app (if running from VS Code)")
+                print("3. Restart VS Code or Terminal")
+                print("\nAlternatively, press F6 manually in OpenSCAD.\n")
+            else:
+                print(f"Note: Could not auto-press F6: {result.stderr}")
         except Exception as e:
             print(f"Note: Could not auto-press F6: {e}")
 
