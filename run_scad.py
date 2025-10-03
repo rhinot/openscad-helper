@@ -46,7 +46,7 @@ def main(argv):
         return 3
 
     # Give the GUI a moment to create its window before attempting automation.
-    time.sleep(2)
+    time.sleep(1)
 
     # On macOS, use AppleScript to send F6 keystroke to render.
     # NOTE: Requires Accessibility permissions for Terminal or VS Code.
