@@ -13,9 +13,8 @@ Behavior:
    open the result in OrcaSlicer.
 
 Notes:
- - On macOS the script will try to press F6 (render) using pyautogui after
-   opening the GUI. pyautogui must be installed and the Python interpreter
-   must have Accessibility permissions for the automation to work.
+ - On macOS the script will automatically press F6 (render) using AppleScript
+   after opening the GUI. No additional dependencies required.
  - This script keeps error handling minimal because it is intended as a
    development helper. Expand error handling if you rely on it in CI.
 """
@@ -50,15 +49,21 @@ def main(argv):
     # automation (macOS F6 press below).
     time.sleep(2)
 
-    # On macOS we can optionally press F6 to trigger a render. This uses
-    # pyautogui if it's available but will not fail if it's missing.
+    # On macOS, use AppleScript to activate OpenSCAD and press F6 to render.
+    # This is more reliable than pyautogui and doesn't require extra dependencies.
     if platform.system() == "Darwin":
         try:
-            import pyautogui
-            # Press F6 to trigger OpenSCAD's preview render on macOS
-            pyautogui.press("f6")
-        except ImportError:
-            print("pyautogui not installed: F6 automation skipped")
+            # AppleScript to activate OpenSCAD and send F6 keystroke
+            applescript = '''
+                tell application "OpenSCAD" to activate
+                tell application "System Events"
+                    keystroke "6" using {function down}
+                end tell
+            '''
+            subprocess.run(["osascript", "-e", applescript], check=False)
+            print("Sent F6 to OpenSCAD (auto-render)")
+        except Exception as e:
+            print(f"Note: Could not auto-press F6: {e}")
 
     # If the user requested a headless build, run OpenSCAD's command line
     # exporter to create a .3mf and then attempt to open it in OrcaSlicer.
