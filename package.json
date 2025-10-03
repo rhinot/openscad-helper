@@ -3,7 +3,7 @@
   "displayName": "OpenSCAD Helper",
   "publisher": "rhinot",
   "description": "Run and Build OpenSCAD files cross-platform with optional macOS auto-F6",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "engines": {
     "vscode": "^1.104.0"
   },
